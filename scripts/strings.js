@@ -5,6 +5,8 @@ export const classNames = {
     todoHeaderTodoCount: 'todos__header__todo-count',
     todoBody: 'todos__body',
     todoDragZone: 'todos__drag-zone',
+    headerSortBtn: 'header__sort-btn',
+    headerSortBtnLabel: 'header__sort-btn__label',
 
     todoItemBody: 'todos__body__item',
     todoItemTitle: 'todos__body__item__title',

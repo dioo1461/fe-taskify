@@ -59,9 +59,10 @@ export const makeTodoMoveAction = (
     return Action(actionTypes.todoMove, '@멋진삼', new Date(), data)
 }
 
-export const makeTodoSortAction = (categoryUid) => {
+export const makeTodoSortAction = (category) => {
+    const copiedCategory = deepCopy(category)
     const data = {
-        categoryUid,
+        category: copiedCategory,
     }
     return Action(actionTypes.todoSort, '@멋진삼', new Date(), data)
 }

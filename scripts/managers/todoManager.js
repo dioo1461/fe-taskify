@@ -31,7 +31,7 @@ export const initTodo = () => {
         categoryList = []
     }
 
-    // 더미 데이터 초기화
+    // 더미 데이터 초기화 로직
     if (keys.RESET_DATA_KEY) {
         let id = 1
         let categoryCnt = 3
@@ -57,58 +57,66 @@ export const initTodo = () => {
         storeData(keys.TODO_CATEGORY_KEY, categoryList)
     }
 
+    categoryList.map((category) => reRenderColumn(category))
+    setState(keys.TODO_CATEGORY_KEY, categoryList)
+
+    let sortNewestOrder = true
+    const todoSortBtn = document.querySelector(`.${classNames.headerSortBtn}`)
+
+    todoSortBtn.addEventListener('click', (e) => {
+        sortCategories(sortNewestOrder)
+        sortNewestOrder = !sortNewestOrder
+        todoSortBtn.querySelector(
+            `.${classNames.headerSortBtnLabel}`
+        ).textContent = sortNewestOrder ? '최신 순' : '생성 순'
+    })
+}
+
+const reRenderColumn = (category) => {
     const mainElement = document.querySelector('.main')
+    const parentElement = findDomElementByUid(category.uid)
+    parentElement ? removeDomElement(parentElement.id) : null
 
-    categoryList.map((category) => {
-        const categoryId = createDomElementAsChild(
-            templateNames.todoHeader,
-            mainElement,
+    const categoryId = createDomElementAsChild(
+        templateNames.todoHeader,
+        mainElement,
+        (identifier, component) => {
+            component = component.querySelector(`.${classNames.todoContainer}`)
+            component.querySelector(
+                `.${classNames.todoHeaderTitle}`
+            ).textContent = category.categoryName
+            component
+                .querySelector(`.${classNames.addButton}`)
+                .addEventListener('click', () => {
+                    onAddTodoButtonClick(category)
+                })
+            component
+                .querySelector(`.${classNames.deleteButton}`)
+                .addEventListener('click', () => {
+                    console.log(category.todoList)
+                })
+
+            manageDropEvents(component, category)
+            return category.uid
+        }
+    )
+    // category.identifier = categoryId
+    category.todoFormDomId = null
+    category.todoList.map((todoItem) => {
+        createDomElementAsChild(
+            templateNames.todoItem,
+            findDomElement(categoryId).querySelector(`.${classNames.todoBody}`),
             (identifier, component) => {
-                component = component.querySelector(
-                    `.${classNames.todoContainer}`
-                )
-                component.querySelector(
-                    `.${classNames.todoHeaderTitle}`
-                ).textContent = category.categoryName
-                component
-                    .querySelector(`.${classNames.addButton}`)
-                    .addEventListener('click', () => {
-                        onAddTodoButtonClick(category)
-                    })
-                component
-                    .querySelector(`.${classNames.deleteButton}`)
-                    .addEventListener('click', () => {
-                        console.log(category.todoList)
-                    })
-
-                manageDropEvents(component, category)
-                return category.uid
+                // todoItem.identifier = identifier
+                initTodoItemElement(component, todoItem)
+                return todoItem.uid
             }
         )
-        // category.identifier = categoryId
-        category.todoFormDomId = null
-        category.todoList.map((todoItem) => {
-            createDomElementAsChild(
-                templateNames.todoItem,
-                findDomElement(categoryId).querySelector(
-                    `.${classNames.todoBody}`
-                ),
-                (identifier, component) => {
-                    // todoItem.identifier = identifier
-                    initTodoItemElement(component, todoItem)
-                    return todoItem.uid
-                }
-            )
-            // identifier 변경을 todoList에 반영
-            return todoItem
-        })
-
-        renewTodoCount(category)
-        // identifier 변경을 categoryList에 반영
-        return category
+        // identifier 변경을 todoList에 반영
+        return todoItem
     })
 
-    setState(keys.TODO_CATEGORY_KEY, categoryList)
+    renewTodoCount(category)
 }
 
 const onAddTodoButtonClick = (category) => {
@@ -322,12 +330,47 @@ const handleTodoEdit = (todoItemUid) => {
     )
 }
 
+const handleTodoSort = () => {
+    const categoryList = getState(keys.TODO_CATEGORY_KEY)
+    categoryList.forEach((category) => {
+        const todoBodyElement = findDomElementByUid(category.uid).querySelector(
+            `.${classNames.todoBody}`
+        )
+        todoBodyElement.replaceChildren()
+        category.todoList.forEach((todoItem) => {
+            createDomElementAsChild(
+                templateNames.todoItem,
+                todoBodyElement,
+                (identifier, component) => {
+                    initTodoItemElement(component, todoItem)
+                    return todoItem.uid
+                }
+            )
+        })
+    })
+}
+
 export const renewTodoCount = (category) => {
     const todoCount = findDomElementByUid(category.uid).querySelector(
         `.${classNames.todoHeaderTodoCount}`
     )
     todoCount.textContent = category.todoList.length
 }
+
+const sortCategories = (isNewestOrder) => {
+    const categoryList = getState(keys.TODO_CATEGORY_KEY)
+    for (let category of categoryList) {
+        if (isNewestOrder) {
+            category.todoList.sort((a, b) => a.createdAt - b.createdAt)
+        } else {
+            category.todoList.sort((a, b) => b.createdAt - a.createdAt)
+        }
+        reRenderColumn(category)
+    }
+    storeData(keys.TODO_CATEGORY_KEY, categoryList)
+}
+
+// ########## UNDO / REDO ##########
 
 export const undoTodoItemCreate = (category, todoItem) => {
     removeDomElement(findDomElementByUid(todoItem.uid).id)

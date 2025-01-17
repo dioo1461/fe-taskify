@@ -147,7 +147,7 @@ export const manageDropEvents = (dragReceiverElement, category) => {
             }
 
             const targetElement = findDomElementByUid(
-                currentCategory.todoList[currentIndex].uid //err
+                currentCategory.todoList[currentIndex].uid
             )
 
             if (prevCategory !== currentCategory) {

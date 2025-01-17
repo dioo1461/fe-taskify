@@ -34,7 +34,7 @@
  *
  *  todoSort =
  *  {
- *      categoryUid,
+ *      category,
  *  }
  */
 

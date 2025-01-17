@@ -8,6 +8,7 @@ const createTodoItem = (title, content, author) => {
         title,
         content,
         author,
+        createdAt: new Date(),
     }
 }
 
