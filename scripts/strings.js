@@ -1,12 +1,12 @@
 export const classNames = {
+    headerSortBtn: 'header__sort-btn',
+    headerSortBtnLabel: 'header__sort-btn__label',
     todoContainer: 'todos',
     todoHeader: 'todos__header',
     todoHeaderTitle: 'todos__header__title',
     todoHeaderTodoCount: 'todos__header__todo-count',
     todoBody: 'todos__body',
     todoDragZone: 'todos__drag-zone',
-    headerSortBtn: 'header__sort-btn',
-    headerSortBtnLabel: 'header__sort-btn__label',
 
     todoItemBody: 'todos__body__item',
     todoItemTitle: 'todos__body__item__title',

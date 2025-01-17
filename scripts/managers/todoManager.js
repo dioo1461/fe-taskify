@@ -293,6 +293,7 @@ const handleTodoEdit = (todoItemUid) => {
     } = originTodoItem
 
     const originTodoElement = findDomElementByUid(originUid)
+    console.log(originUid, todoItemUid, originTodoElement)
     replaceDomElement(
         templateNames.todoItemEditForm,
         originTodoElement,
@@ -347,7 +348,7 @@ const handleTodoEdit = (todoItemUid) => {
                         findDomElement(identifier),
                         (identifier, component) => {
                             initTodoItemElement(component, originTodoItem)
-                            // todoList[targetIdx] = abortedTodoItem
+                            return originTodoItem.uid
                         }
                     )
                 })
