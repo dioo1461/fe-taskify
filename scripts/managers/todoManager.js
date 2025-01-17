@@ -81,9 +81,20 @@ export const initTodo = () => {
 }
 
 const handleCategoryCreate = () => {
-    const mainElement = document.querySelector('.main')
     const newCategory = Category('새로운 카테고리')
     reRenderColumn(newCategory)
+
+    const categoryList = getState(keys.TODO_CATEGORY_KEY)
+    categoryList.push(newCategory)
+    storeData(keys.TODO_CATEGORY_KEY, categoryList)
+}
+
+const handleCategoryDelete = (category) => {
+    const categoryList = getState(keys.TODO_CATEGORY_KEY)
+    const idx = categoryList.indexOf(category)
+    categoryList.splice(idx, 1)
+    storeData(keys.TODO_CATEGORY_KEY, categoryList)
+    findDomElementByUid(category.uid).remove()
 }
 
 const reRenderColumn = (category) => {
@@ -107,7 +118,7 @@ const reRenderColumn = (category) => {
             component
                 .querySelector(`.${classNames.deleteButton}`)
                 .addEventListener('click', () => {
-                    console.log(category.todoList)
+                    handleCategoryDelete(category)
                 })
 
             manageDropEvents(component, category)
