@@ -125,20 +125,16 @@ const reRenderColumn = (category) => {
             return category.uid
         }
     )
-    // category.identifier = categoryId
     category.todoFormDomId = null
     category.todoList.map((todoItem) => {
         createDomElementAsChild(
             templateNames.todoItem,
             findDomElement(categoryId).querySelector(`.${classNames.todoBody}`),
             (identifier, component) => {
-                // todoItem.identifier = identifier
                 initTodoItemElement(component, todoItem)
                 return todoItem.uid
             }
         )
-        // identifier 변경을 todoList에 반영
-        return todoItem
     })
 
     renewTodoCount(category)
@@ -354,26 +350,6 @@ const handleTodoEdit = (todoItemUid) => {
                 })
         }
     )
-}
-
-const handleTodoSort = () => {
-    const categoryList = getState(keys.TODO_CATEGORY_KEY)
-    categoryList.forEach((category) => {
-        const todoBodyElement = findDomElementByUid(category.uid).querySelector(
-            `.${classNames.todoBody}`
-        )
-        todoBodyElement.replaceChildren()
-        category.todoList.forEach((todoItem) => {
-            createDomElementAsChild(
-                templateNames.todoItem,
-                todoBodyElement,
-                (identifier, component) => {
-                    initTodoItemElement(component, todoItem)
-                    return todoItem.uid
-                }
-            )
-        })
-    })
 }
 
 export const renewTodoCount = (category) => {
