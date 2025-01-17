@@ -23,7 +23,7 @@ import {
 import { deepCopy } from '../utils/dataUtil.js'
 
 export const initTodo = () => {
-    keys.RESET_DATA_KEY && storeData(keys.TODO_CATEGORY_KEY, [])
+    keys.RESET_DATA_KEY && storeData(keys.TODO_CATEGORY_KEY, null)
 
     let categoryList = loadData(keys.TODO_CATEGORY_KEY)
     if (!categoryList) {
@@ -57,6 +57,7 @@ export const initTodo = () => {
         storeData(keys.TODO_CATEGORY_KEY, categoryList)
     }
 
+    // 메인 로직
     categoryList.map((category) => reRenderColumn(category))
     setState(keys.TODO_CATEGORY_KEY, categoryList)
 
@@ -70,6 +71,19 @@ export const initTodo = () => {
             `.${classNames.headerSortBtnLabel}`
         ).textContent = sortNewestOrder ? '최신 순' : '생성 순'
     })
+
+    const categoryAddBtn = document.querySelector(
+        `.${classNames.addCategoryBtn}`
+    )
+    categoryAddBtn.addEventListener('click', () => {
+        handleCategoryCreate()
+    })
+}
+
+const handleCategoryCreate = () => {
+    const mainElement = document.querySelector('.main')
+    const newCategory = Category('새로운 카테고리')
+    reRenderColumn(newCategory)
 }
 
 const reRenderColumn = (category) => {

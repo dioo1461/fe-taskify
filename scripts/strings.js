@@ -46,7 +46,7 @@ export const classNames = {
 
     undoButton: 'advanced-features__undo-btn',
     redoButton: 'advanced-features__redo-btn',
-    addCategoryButton: 'advanced-features__add-category-btn',
+    addCategoryBtn: 'advanced-features__add-category-btn',
 }
 
 export const templateNames = {
